@@ -40,4 +40,23 @@ GRANT SELECT ON mediatheque.emprunt TO 'analyste'@'localhost';
 
 SET DEFAULT ROLE ALL TO 'app_media'@'localhost', 'biblio_marie'@'localhost', 'stagiaire'@'localhost', 'analyste'@'localhost'; 
 
+SHOW GRANTS FOR 'app_media'@'localhost';
+SHOW GRANTS FOR 'biblio_marie'@'localhost';
+SHOW GRANTS FOR 'stagiaire'@'localhost';
+SHOW GRANTS FOR 'analyste'@'localhost';
+
+SELECT GRANTEE, TABLE_NAME, COLUMN_NAME, PRIVILEGE_TYPE
+FROM information_schema.column_privileges
+WHERE TABLE_SCHEMA = 'mediatheque'
+ORDER BY GRANTEE, TABLE_NAME, COLUMN_NAME;
+
+GRANT SELECT ON mediatheque.reservation TO 'analyste'@'localhost';
+SHOW GRANTS FOR 'analyste'@'localhost';
+
+REVOKE SELECT ON mediatheque.reservation FROM 'analyste'@'localhost';
+SHOW GRANTS FOR 'analyste'@'localhost';
+
+
+
+
 
