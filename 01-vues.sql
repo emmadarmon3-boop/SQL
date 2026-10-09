@@ -1,7 +1,7 @@
 USE mediatheque;
 
 -- 1. Vue Catalogue
-CREATE OR REPLACE VIEW v_catalogue AS 
+CREATE OR REPLACE VIEW mediatheque.v_catalogue AS 
 SELECT ou.id                                    AS ouvrage_id,
        ou.titre,
        ou.auteur,
@@ -15,7 +15,7 @@ LEFT JOIN exemplaire ex ON ex.ouvrage_id = ou.id
 GROUP BY ou.id, ou.titre, ou.auteur, ou.annee_publication, ct.libelle;
 
 -- 2. Vue Adhérent Public
-CREATE OR REPLACE VIEW v_adherent_public AS 
+CREATE OR REPLACE VIEW mediatheque.v_adherent_public AS 
 SELECT id,
        nom,
        prenom,
@@ -25,7 +25,7 @@ SELECT id,
 FROM adherent;
 
 -- 3. Vue Emprunt en Cours
-CREATE OR REPLACE VIEW v_emprunt_en_cours AS 
+CREATE OR REPLACE VIEW mediatheque.v_emprunt_en_cours AS 
 SELECT em.id                                      AS emprunt_id,
        em.date_emprunt,
        em.date_retour_prevu,
@@ -40,7 +40,7 @@ JOIN ouvrage ou ON ou.id = ex.ouvrage_id
 WHERE em.date_retour_reelle IS NULL;
 
 -- 4. Vue Retard
-CREATE OR REPLACE VIEW v_retard AS 
+CREATE OR REPLACE VIEW mediatheque.v_retard AS 
 SELECT *
 FROM v_emprunt_en_cours
 WHERE jours_retard > 0;
