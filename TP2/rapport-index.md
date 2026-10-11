@@ -15,7 +15,7 @@ SELECT * FROM emprunt WHERE date_emprunt = '2024-03-12';
 
 | | `type` | `key` | `rows` | `Extra` |
 |---|---|---|---|---|
-| avant | | | | |
+| avant |ALL |NULL | 130| Using where|
 | après | | | | |
 
 - Index créé : `                                                        `
@@ -30,7 +30,7 @@ SELECT * FROM emprunt WHERE date_retour_reelle IS NULL;
 
 | | `type` | `key` | `rows` | `Extra` |
 |---|---|---|---|---|
-| avant | | | | |
+| avant |ALL |NULL | 130|Using where |
 | après | | | | |
 
 - Index créé : `                                                        `
@@ -46,7 +46,7 @@ SELECT id, date_emprunt FROM emprunt
 
 | | `type` | `key` | `rows` | `Extra` |
 |---|---|---|---|---|
-| avant | | | | |
+| avant |ref |fk_emprunt_adherent|5 |Using where |
 | après | | | | |
 
 - Index créé : `                                                        `
