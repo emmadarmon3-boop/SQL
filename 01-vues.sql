@@ -28,8 +28,8 @@ FROM adherent;
 CREATE OR REPLACE VIEW mediatheque.v_emprunt_en_cours AS 
 SELECT em.id                                      AS emprunt_id,
        em.date_emprunt,
-       em.date_retour_prevu,
-       DATEDIFF(CURDATE(), em.date_retour_prevu)  AS jours_retard,   
+       em.date_retour_prevue,
+       DATEDIFF(CURDATE(), em.date_retour_prevue)  AS jours_retard,   
        CONCAT(a.nom, ' ', a.prenom)               AS adherent,
        ou.titre,
        ex.code_barre
@@ -57,3 +57,9 @@ REVOKE SELECT ON mediatheque.adherent FROM 'stagiaire'@'localhost';
 GRANT SELECT ON mediatheque.v_adherent_public  TO 'stagiaire'@'localhost';
 GRANT SELECT ON mediatheque.v_catalogue        TO 'stagiaire'@'localhost';
 GRANT SELECT ON mediatheque.v_emprunt_en_cours TO 'stagiaire'@'localhost';
+
+/*
+-- Le stagiaire arrive à lire les 3 vues malgré qu'il n'ait aucun privilège sur adherent, emprunt ou exemplaire
+car les vues s'exécutent par défaut avec les privilèges de leur créateur (définisseur) qui possède les droits sur les tables sous-jacentes, 
+et non avec les droits restreints de l'utilisateur qui les interroge.
+*/
