@@ -85,10 +85,10 @@ Explication : `YEAR(date_emprunt)` oblige MySQL à calculer l'année pour chaque
 
 | | `donnees_mo` | `index_mo` |
 |---|---|---|
-| avant | | |
-| après | | |
+| avant | 8.52 | 10.03|
+| après |8.52 | 18.06| 
 
-Conclusion :
+Conclusion: les données ne changent pas (8,52 Mo), mais les index passent de 10,03 à 18,06 Mo, soit +8 Mo (+80 %) pour seulement 3 index. Après optimisation, les index pèsent plus de deux fois le poids des données. Un index accélère les lectures (R1 : de 199 875 à 140 lignes lues), mais il a un coût : de l'espace disque, et des écritures plus lentes, car chaque `INSERT`, `UPDATE` ou `DELETE` doit mettre à jour tous les index concernés. On n'indexe donc que les colonnes utilisées par des requêtes fréquentes et sélectives, pas toutes les colonnes « au cas où ».
 
 ## Bonus
 
