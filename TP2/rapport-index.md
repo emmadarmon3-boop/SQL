@@ -16,7 +16,7 @@ SELECT * FROM emprunt WHERE date_emprunt = '2024-03-12';
 | | `type` | `key` | `rows` | `Extra` |
 |---|---|---|---|---|
 | avant |ALL |NULL | 199875 | Using where|
-| après |`ref`  | `idx_emprunt_date` |140 | `NULL`
+| après |`ref`  | `idx_emprunt_date` |140 | `NULL`|
 -
 - Index créé : `CREATE INDEX idx_emprunt_date ON emprunt (date_emprunt);`                                                  `
 - Lignes réellement renvoyées : 104;       `
