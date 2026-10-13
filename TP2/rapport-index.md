@@ -30,12 +30,12 @@ SELECT * FROM emprunt WHERE date_retour_reelle IS NULL;
 
 | | `type` | `key` | `rows` | `Extra` |
 |---|---|---|---|---|
-| avant |ALL |NULL | 130|Using where |
-| après | | | | |
+| avant |ALL |NULL | 199 875|Using where |
+| après | ref | idx_emprunt_retour | 30 | Using index condition |
 
-- Index créé : `                                                        `
-- Lignes réellement renvoyées : `        `
-- Une phrase de conclusion :
+- Index créé : `CREATE INDEX idx_emprunt_retour ON emprunt (date_retour_reelle);`                                                 
+- Lignes réellement renvoyées :  `30`    
+- Une phrase de conclusion : Sans index, MySQL parcourt toute la table (199 875 lignes) pour n'en renvoyer que 30 ; avec l'index sur `date_retour_reelle`, il accède directement aux lignes `NULL` (`ref`) et ne lit plus que 30 lignes, exactement le nombre renvoyé.
 
 ### R3 — l'historique récent d'un adhérent
 
