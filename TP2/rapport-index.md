@@ -46,23 +46,24 @@ SELECT id, date_emprunt FROM emprunt
 
 | | `type` | `key` | `rows` | `Extra` |
 |---|---|---|---|---|
-| avant |ref |fk_emprunt_adherent|5 |Using where |
-| après | | | | |
+| avant |ref |fk_emprunt_adherent|55070  |Using where |
+| après | range|`idx_emprunt_adh_date` | 741 |`Using where; Using index` |
 
-- Index créé : `                                                        `
+- Index créé :  `CREATE INDEX idx_emprunt_adh_date ON emprunt (adherent_id, date_emprunt);                                                       `
 - Pourquoi les colonnes sont-elles dans cet ordre, et pas dans l'autre ?
+ On place d'abord la colonne testée par égalité (`adherent_id = 12`), puis celle testée par plage (`date_emprunt >= '2025-01-01'`). L'index est trié par adhérent, puis par date à l'intérieur de chaque adhérent : MySQL saute directement au bloc de l'adhérent 12 et n'y lit que les dates à partir de 2025, soit environ 741 lignes au lieu des 5 070 emprunts de l'adhérent. Dans l'ordre inverse `(date_emprunt, adherent_id)`, la plage sur la date arrive en premier : MySQL devrait parcourir tous les emprunts depuis 2025, tous adhérents confondus, puis filtrer sur l'adhérent. Après une condition de plage, les colonnes suivantes de l'index ne servent plus à la recherche.
 
 ## Le préfixe gauche (consigne 7)
 
 | Requête | L'index composite sert-il ? | Pourquoi |
 |---|---|---|
-| `WHERE adherent_id = 12` | | |
-| `WHERE date_emprunt >= '2025-01-01'` | | |
+| `WHERE adherent_id = 12` | Oui : `ref` sur `idx_emprunt_adh_date`, `key_len = 4`, 5070 lignes | `adherent_id` est la première colonne de l'index (préfixe gauche) : l'index est trié d'abord sur elle, MySQL va directement aux lignes de l'adhérent 12. `key_len = 4` montre qu'il n'utilise que cette première colonne. |
+| `WHERE date_emprunt >= '2025-01-01'` | | Non : `ALL`, `possible_keys = NULL`, 199875 lignes | `date_emprunt` n'est que la deuxième colonne : les dates ne sont triées qu'à l'intérieur de chaque adhérent, pas sur toute la table. Sans condition sur `adherent_id`, MySQL ne peut pas entrer dans l'index et parcourt toute la table. |
 
 ## L'index couvrant (consigne 8)
 
-- Mention présente dans le premier `Extra` : `                    `
-- Elle disparaît dans le second parce que :
+- Mention présente dans le premier `Extra` : ` `Extra` : `Using index` (Extra complet : `Using where; Using index`)                   `
+- Elle disparaît dans le second parce que : la première requête ne demande que `id` et `date_emprunt`, deux colonnes déjà présentes dans l'index `idx_emprunt_adh_date` (`id`, clé primaire, est stocké automatiquement dans tout index secondaire InnoDB). MySQL répond donc uniquement en lisant l'index, sans jamais lire la table : l'index est **couvrant**. Avec `SELECT *`, la requête demande toutes les colonnes, dont la plupart ne sont pas dans l'index. MySQL utilise toujours l'index pour trouver les 741 lignes (`range`, même `rows`), mais doit ensuite aller lire chaque ligne complète dans la table : l'index n'est plus couvrant (`Extra` devient `Using index condition`).
 
 ## La requête réécrite (consigne 9)
 
