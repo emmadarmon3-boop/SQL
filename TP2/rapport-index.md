@@ -17,7 +17,7 @@ SELECT * FROM emprunt WHERE date_emprunt = '2024-03-12';
 |---|---|---|---|---|
 | avant |ALL |NULL | 199875 | Using where|
 | après |`ref`  | `idx_emprunt_date` |140 | `NULL`
-
+-
 - Index créé : `CREATE INDEX idx_emprunt_date ON emprunt (date_emprunt);`                                                  `
 - Lignes réellement renvoyées : 104;       `
 - Une phrase de conclusion: Sans index, MySQL parcourt toute la table (~200 000 lignes) pour n'en renvoyer que 104 ; avec l'index sur `date_emprunt`, il accède directement aux lignes de la date demandée (`ref`, `rows` ≈ 140), soit plus de 1 000 fois moins de lignes lues.
