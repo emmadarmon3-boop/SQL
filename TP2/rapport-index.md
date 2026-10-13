@@ -70,15 +70,16 @@ SELECT id, date_emprunt FROM emprunt
 ```sql
 -- version d'origine
 SELECT COUNT(*) FROM emprunt WHERE YEAR(date_emprunt) = 2024;
--- type : ______   rows : ______
+-- type : ___index   ___   rows : ____199875__
 
 -- version réécrite
 
 
--- type : ______   rows : ______
+-- type : ___range   ___   rows : __22203____
 ```
 
-Les deux renvoient bien le même nombre : `          `
+Les deux renvoient bien le même nombre :   `43015`    
+Explication : `YEAR(date_emprunt)` oblige MySQL à calculer l'année pour chaque ligne. Aucun index n'est utilisable pour chercher (`possible_keys = NULL`), donc il parcourt l'index en entier (`type = index`, 199 875 lignes). En écrivant la condition directement sur la colonne, sous forme de plage, la requête devient utilisable par un index (`possible_keys` liste deux index) et MySQL fait une recherche par plage (`range`).    
 
 ## Le prix des index (consigne 10)
 
