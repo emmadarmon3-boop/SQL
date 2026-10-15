@@ -73,7 +73,7 @@ SELECT COUNT(*) FROM emprunt WHERE YEAR(date_emprunt) = 2024;
 -- type : ___index   ___   rows : ____199875__
 
 -- version réécrite
-
+SELECT COUNT(*) FROM emprunt WHERE date_emprunt >= '2024-01-01' AND date_emprunt < '2025-01-01';
 
 -- type : ___range   ___   rows : __22203____
 ```
