@@ -72,7 +72,7 @@ SELECT operation, cle, auteur, details FROM journal_action ORDER BY id DESC LIMI
 -- Attendu : exemplaire déjà emprunté
 -- ---------------------------------------------------------------------
 -- CALL p_emprunter(@code, @autre_adherent, @id);
--- Erreur obtenue : ERROR 1644 (45000): <coller le message exact>
+-- Erreur obtenue : ERROR 1644 (45000): Cet exemplaire n'est pas disponible.
 
 
 -- ---------------------------------------------------------------------
@@ -115,7 +115,7 @@ SELECT f_nb_emprunts_en_cours(@adherent) AS nb_emprunts;   -- attendu : 5
 
 SET @c = (SELECT code_barre FROM exemplaire WHERE disponible = 1 AND etat <> 'hors_service' ORDER BY id LIMIT 1);
 -- CALL p_emprunter(@c, @adherent, @id);   -- 6e — DOIT ÉCHOUER
--- Erreur obtenue : ERROR 1644 (45000): <coller le message exact>
+-- Erreur obtenue : ERROR 1644 (45000): L'adhérent a atteint le maximum de 5 emprunts en cours.
 
 
 -- ---------------------------------------------------------------------
@@ -124,7 +124,7 @@ SET @c = (SELECT code_barre FROM exemplaire WHERE disponible = 1 AND etat <> 'ho
 -- ---------------------------------------------------------------------
 SELECT f_penalites_dues(@mauvais_payeur) AS du;   -- attendu : 12.00
 -- CALL p_emprunter(@c, @mauvais_payeur, @id);
--- Erreur obtenue : ERROR 1644 (45000): <coller le message exact>
+-- Erreur obtenue : ERROR 1644 (45000): L'adhérent dépasse la limite de 10 € de pénalités impayées.
 
 
 -- ---------------------------------------------------------------------

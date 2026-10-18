@@ -51,7 +51,7 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cet exemplaire est hors service.';
     END IF;
 
-=    IF f_nb_emprunts_en_cours(p_adherent_id) >= 5 THEN
+    IF f_nb_emprunts_en_cours(p_adherent_id) >= 5 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'L''adhérent a atteint le maximum de 5 emprunts en cours.';
     END IF;
 

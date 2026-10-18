@@ -62,9 +62,9 @@ SELECT adherent_id, montant, motif FROM penalite ORDER BY id DESC LIMIT 1;
 Deux questions, deux réponses en une phrase chacune :
 
 **1.** Le test T7 passe par un `INSERT` direct, sans procédure. Qu'est-ce qui, malgré tout, reste garanti — et qu'est-ce qui ne l'est plus ?
-
+Le trigger garantit toujours la date d’emprunt, le retour prévu à +14 jours, le passage de l’exemplaire en indisponible et la trace dans journal_action ; en revanche, plus aucun contrôle métier ne s’applique (code-barres valide, adhérent actif, quota de 5, pénalités inférieures à 10 €), si bien que l’adhérent 2, déjà en retard, a pu emprunter.
 >
 
 **2.** Une règle du tableau du sujet pourrait changer de camp (passer de la procédure au trigger, ou l'inverse). Laquelle, et qu'est-ce que cela changerait ?
-
+La vérification « exemplaire disponible » pourrait passer de la procédure à un trigger BEFORE INSERT sur emprunt (avec un SIGNAL) : elle bloquerait alors aussi les INSERT directs comme celui de T7, au prix d’une logique métier répartie entre procédure et trigger, donc plus difficile à lire, à tester et à faire évoluer.
 >
