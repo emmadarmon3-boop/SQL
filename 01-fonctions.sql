@@ -20,22 +20,19 @@ CREATE FUNCTION f_jours_de_retard(
 RETURNS INT
 READS SQL DATA
 BEGIN
-    DECLARE v_date_emprunt DATE;
+    DECLARE v_date_retour_prevue DATE;
     DECLARE v_date_retour_reelle DATE;
-    DECLARE v_date_limite DATE;
     DECLARE v_date_reference DATE;
     DECLARE v_jours INT;
 
-    SELECT date_emprunt, date_retour_reelle
-      INTO v_date_emprunt, v_date_retour_reelle
+    SELECT date_retour_prevue, date_retour_reelle
+      INTO v_date_retour_prevue, v_date_retour_reelle
       FROM emprunt
      WHERE id = p_emprunt_id;
 
-    SET v_date_limite = DATE_ADD(v_date_emprunt, INTERVAL 14 DAY);
-    
     SET v_date_reference = COALESCE(v_date_retour_reelle, CURDATE());
     
-    SET v_jours = DATEDIFF(v_date_reference, v_date_limite);
+    SET v_jours = DATEDIFF(v_date_reference, v_date_retour_prevue);
 
     IF v_jours < 0 THEN
         RETURN 0;
@@ -46,21 +43,21 @@ END $$
 
 CREATE FUNCTION f_penalites_dues(
     p_adherent_id INT UNSIGNED)
-RETURNS DECIMAL(10,2)
+RETURNS DECIMAL(6,2)
 READS SQL DATA
 BEGIN
-    DECLARE v_total DECIMAL(10,2);
+    DECLARE v_total DECIMAL(6,2);
 
-    SELECT COALESCE(SUM(f_jours_de_retard(id) * 0.20), 0.00)
+    SELECT COALESCE(SUM(montant), 0.00)
       INTO v_total
-      FROM emprunt
-     WHERE adherent_id = p_adherent_id;
+      FROM penalite
+     WHERE adherent_id = p_adherent_id
+       AND payee = 0;
 
     RETURN v_total;
 END $$
 
 DELIMITER ;
-
 
 SELECT 
     a.id,
