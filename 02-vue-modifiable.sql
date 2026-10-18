@@ -11,7 +11,7 @@ VALUES ('Duport', 'Mia', 'mia.duport@email.com', 'Lyon', CURRENT_DATE());
 /*ERROR 1369 (HY000): CHECK OPTION failed 'mediatheque.v_adherent_lyon'
 MySQL a bloqué l'insertion parce qu'on a tenté d'ajouter un adhérent dont la ville est 'Bron'
 et non Lyon dans la vue v_adherent_lyon configurée avec WITH CHECk OPTION. Alors que toutes les lignes insérée via la vue doivent 
-obligatoirement respecter le filtre WHER ville = 'Lyon'
+obligatoirement respecter le filtre WHERE ville = 'Lyon'
 */
 INSERT INTO mediatheque.v_adherent_lyon (nom, prenom, email, ville, date_inscription)
 VALUES('Marchand', 'Maya', 'maya.marchand@email.com', 'Bron', CURRENT_DATE()); 
